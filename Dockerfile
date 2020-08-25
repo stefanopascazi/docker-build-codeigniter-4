@@ -9,7 +9,6 @@ RUN set -eux; \
 	; \
 	rm -rf /var/lib/apt/lists/*
 
-# install the PHP extensions we need (https://make.wordpress.org/hosting/handbook/handbook/server-environment/#php-extensions)
 RUN set -ex; \
 	\
 	savedAptMark="$(apt-mark showmanual)"; \
@@ -58,7 +57,7 @@ RUN set -eux; \
 		echo 'opcache.revalidate_freq=2'; \
 		echo 'opcache.fast_shutdown=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
-# https://wordpress.org/support/article/editing-wp-config-php/#configure-error-logging
+
 RUN { \
 # https://www.php.net/manual/en/errorfunc.constants.php
 # https://github.com/docker-library/wordpress/issues/420#issuecomment-517839670
@@ -88,11 +87,9 @@ RUN set -eux; \
 		echo 'RemoteIPTrustedProxy 127.0.0.0/8'; \
 	} > /etc/apache2/conf-available/remoteip.conf; \
 	a2enconf remoteip; \
-# https://github.com/docker-library/wordpress/issues/383#issuecomment-507886512
-# (replace all instances of "%h" with "%a" in LogFormat)
 	find /etc/apache2 -type f -name '*.conf' -exec sed -ri 's/([[:space:]]*LogFormat[[:space:]]+"[^"]*)%h([^"]*")/\1%a\2/g' '{}' +
 
-#Custom
+# extra settings
 
 RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
@@ -113,25 +110,23 @@ RUN ["docker-php-ext-configure", "intl"]
 RUN ["docker-php-ext-configure", "zip"]
 RUN ["docker-php-ext-install", "mysqli", "pdo", "pdo_mysql", "zip"]
 
+# work directory
 WORKDIR /var/www/html
 
-
+# Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Install latest codeIgniter 4 latest
 RUN composer require codeigniter4/framework --ignore-platform-reqs
 
+# COPY all dependecies
 COPY ./web/app ./app
 COPY ./web/public ./public
 COPY ./web/writable ./writable
 COPY ./web/spark ./spark
 
-RUN printf "CI_ENVIRONMENT = ${CI_ENVIRONMENT}\napp.baseURL = ${URL}" > .env
-#COPY ./App /var/www/html
-
-#RUN mkdir /var/safe
-#COPY ./App /var/safe
-#COPY docker-entrypoint.sh /usr/local/bin/
-#RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+# Setting correct USER:GROUP
+RUN chown -R www-data:www-data ./*
 
 #ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
