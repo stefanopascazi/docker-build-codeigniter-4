@@ -122,7 +122,10 @@ RUN composer require codeigniter4/framework --ignore-platform-reqs
 
 RUN cp -r vendor/codeigniter4/framework/* ./
 
-COPY ./Paths.php ./app/Config
+COPY ./web/app ./app
+COPY ./web/public ./public
+COPY ./web/writable ./writable
+COPY ./web/spark ./spark
 
 #COPY ./App /var/www/html
 
