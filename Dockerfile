@@ -120,13 +120,12 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 RUN composer require codeigniter4/framework --ignore-platform-reqs
 
-RUN cp -r vendor/codeigniter4/framework/* ./
-
 COPY ./web/app ./app
 COPY ./web/public ./public
 COPY ./web/writable ./writable
 COPY ./web/spark ./spark
 
+RUN printf "CI_ENVIRONMENT = ${CI_ENVIRONMENT}\napp.baseURL = ${URL}" > .env
 #COPY ./App /var/www/html
 
 #RUN mkdir /var/safe
