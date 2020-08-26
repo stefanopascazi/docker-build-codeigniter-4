@@ -111,7 +111,7 @@ RUN ["docker-php-ext-configure", "zip"]
 RUN ["docker-php-ext-install", "mysqli", "pdo", "pdo_mysql", "zip"]
 
 # work directory
-WORKDIR /var/www/html
+WORKDIR /var/www
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -121,7 +121,7 @@ RUN composer require codeigniter4/framework --ignore-platform-reqs
 
 # COPY all dependecies
 COPY ./web/app ./app
-COPY ./web/public ./public
+COPY ./web/public ./html
 COPY ./web/writable ./writable
 COPY ./web/spark ./spark
 
