@@ -1,4 +1,4 @@
-FROM php:7.2-apache
+FROM php:7.3-apache
 
 # persistent dependencies
 RUN set -eux; \
@@ -9,6 +9,7 @@ RUN set -eux; \
 	; \
 	rm -rf /var/lib/apt/lists/*
 
+# install the PHP extensions
 RUN set -ex; \
 	\
 	savedAptMark="$(apt-mark showmanual)"; \
@@ -19,6 +20,7 @@ RUN set -ex; \
 		libjpeg-dev \
 		libmagickwand-dev \
 		libpng-dev \
+		libzip-dev \
 	; \
 	\
 	docker-php-ext-configure gd --with-freetype-dir=/usr --with-jpeg-dir=/usr --with-png-dir=/usr; \
@@ -57,10 +59,9 @@ RUN set -eux; \
 		echo 'opcache.revalidate_freq=2'; \
 		echo 'opcache.fast_shutdown=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
-
+# https://wordpress.org/support/article/editing-wp-config-php/#configure-error-logging
 RUN { \
 # https://www.php.net/manual/en/errorfunc.constants.php
-# https://github.com/docker-library/wordpress/issues/420#issuecomment-517839670
 		echo 'error_reporting = E_ERROR | E_WARNING | E_PARSE | E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_COMPILE_WARNING | E_RECOVERABLE_ERROR'; \
 		echo 'display_errors = Off'; \
 		echo 'display_startup_errors = Off'; \
@@ -89,26 +90,14 @@ RUN set -eux; \
 	a2enconf remoteip; \
 	find /etc/apache2 -type f -name '*.conf' -exec sed -ri 's/([[:space:]]*LogFormat[[:space:]]+"[^"]*)%h([^"]*")/\1%a\2/g' '{}' +
 
-# extra settings
-
-RUN apt-get update && apt-get install -y \
-        libfreetype6-dev \
-        libjpeg62-turbo-dev \
-        libmcrypt-dev \
-        libpng-dev \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd
 
 
 RUN ["apt-get", "update"]
 RUN ["apt-get", "install", "-y", "libicu-dev"]
-RUN ["apt-get", "install", "-y", "libzip-dev"]
-RUN ["apt-get", "install", "-y", "zip"]
 RUN ["apt-get", "install", "-y", "unzip"]
 RUN ["docker-php-ext-install", "intl"]
 RUN ["docker-php-ext-configure", "intl"]
-RUN ["docker-php-ext-configure", "zip"]
-RUN ["docker-php-ext-install", "mysqli", "pdo", "pdo_mysql", "zip"]
+RUN ["docker-php-ext-install", "mysqli", "pdo", "pdo_mysql"]
 
 # work directory
 WORKDIR /var/www
