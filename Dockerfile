@@ -117,7 +117,7 @@ WORKDIR /var/www
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Install latest codeIgniter 4 latest
-RUN composer require codeigniter4/framework --ignore-platform-reqs
+RUN composer require codeigniter4/framework:v4.0.4 --ignore-platform-reqs
 
 # COPY all dependecies
 COPY ./web/app ./app
