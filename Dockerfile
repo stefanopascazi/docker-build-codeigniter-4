@@ -91,7 +91,7 @@ RUN set -eux; \
 	find /etc/apache2 -type f -name '*.conf' -exec sed -ri 's/([[:space:]]*LogFormat[[:space:]]+"[^"]*)%h([^"]*")/\1%a\2/g' '{}' +
 
 RUN touch /usr/local/etc/php/conf.d/uploads.ini \
-    && echo "upload_max_filesize=64M;\r\n post_max_size=128M;\r\nmemory_limit = 512M" >> /usr/local/etc/php/conf.d/uploads.ini
+    && echo "upload_max_filesize=256M;\r\n post_max_size=512M;\r\nmemory_limit = 512M" >> /usr/local/etc/php/conf.d/uploads.ini
 
 RUN ["apt-get", "update"]
 RUN ["apt-get", "install", "-y", "libicu-dev"]
