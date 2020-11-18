@@ -98,6 +98,8 @@ RUN ["apt-get", "install", "-y", "libicu-dev"]
 RUN ["apt-get", "install", "-y", "unzip"]
 RUN ["docker-php-ext-install", "intl"]
 RUN ["docker-php-ext-configure", "intl"]
+RUN ["apt-get", "install", "-y", "libxml2-dev"]
+RUN ["docker-php-ext-install", "soap"]
 RUN ["docker-php-ext-install", "mysqli", "pdo", "pdo_mysql"]
 
 # work directory
