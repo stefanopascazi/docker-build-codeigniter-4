@@ -1,4 +1,4 @@
-FROM php:7.4-apache
+FROM php:8.0.0RC5-apache
 
 # persistent dependencies
 RUN set -eux; \
@@ -31,8 +31,8 @@ RUN set -ex; \
 		mysqli \
 		zip \
 	; \
-	pecl install imagick-3.4.4; \
-	docker-php-ext-enable imagick; \
+	#pecl install imagick-3.4.4; \
+	#docker-php-ext-enable imagick; \
 	\
 # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
 	apt-mark auto '.*' > /dev/null; \

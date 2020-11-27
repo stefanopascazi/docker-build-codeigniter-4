@@ -6,4 +6,6 @@ services:
     restart: always
     container_name: codeigniter
     volumes: 
-        - $(pwd)/.env:/var/www/.env
+        - ./.env.local:/var/www/.env
+    ports:
+      - 8112:80
