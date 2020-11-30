@@ -100,7 +100,7 @@ RUN ["docker-php-ext-install", "intl"]
 RUN ["docker-php-ext-configure", "intl"]
 RUN ["apt-get", "install", "-y", "libxml2-dev"]
 RUN ["docker-php-ext-install", "soap"]
-RUN ["docker-php-ext-install", "mysqli", "pdo", "pdo_mysql"]
+RUN ["docker-php-ext-install", "pdo", "pdo_mysql"]
 
 # work directory
 WORKDIR /var/www
@@ -111,9 +111,9 @@ COPY ./web/public ./html
 COPY ./web/writable ./writable
 COPY ./web/spark ./spark
 COPY ./web/system ./system
+COPY ./web/test ./test
 
 # Setting correct USER:GROUP
 RUN chown -R www-data:www-data ./*
 
-#ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
