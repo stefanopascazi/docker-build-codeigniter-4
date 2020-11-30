@@ -105,17 +105,12 @@ RUN ["docker-php-ext-install", "mysqli", "pdo", "pdo_mysql"]
 # work directory
 WORKDIR /var/www
 
-# Install composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Install latest codeIgniter 4 latest
-RUN composer require codeigniter4/framework:v4.0.4 --ignore-platform-reqs
-
 # COPY all dependecies
 COPY ./web/app ./app
 COPY ./web/public ./html
 COPY ./web/writable ./writable
 COPY ./web/spark ./spark
+COPY ./web/system ./system
 
 # Setting correct USER:GROUP
 RUN chown -R www-data:www-data ./*
