@@ -126,7 +126,7 @@ RUN composer require codeigniter4/framework:v4.0.4 --ignore-platform-reqs
 
 # COPY all dependecies
 COPY ./web/app ./app
-COPY ./web/public ./api
+COPY ./web/public ./html
 COPY ./web/writable ./writable
 COPY ./web/spark ./spark
 
