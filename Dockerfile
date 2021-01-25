@@ -108,7 +108,7 @@ RUN apt-get update \
     && docker-php-ext-install pdo_pgsql pgsql
 
 # work directory
-WORKDIR /var/www/html
+WORKDIR /var/www
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
