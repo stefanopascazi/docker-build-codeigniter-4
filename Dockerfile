@@ -93,6 +93,7 @@ RUN set -eux; \
 RUN touch /usr/local/etc/php/conf.d/uploads.ini \
     && echo "upload_max_filesize=256M;\r\n post_max_size=512M;\r\nmemory_limit = 512M" >> /usr/local/etc/php/conf.d/uploads.ini
 
+
 RUN ["apt-get", "update"]
 RUN ["apt-get", "install", "-y", "libicu-dev"]
 RUN ["apt-get", "install", "-y", "unzip"]
@@ -102,8 +103,12 @@ RUN ["apt-get", "install", "-y", "libxml2-dev"]
 RUN ["docker-php-ext-install", "soap"]
 RUN ["docker-php-ext-install", "mysqli", "pdo", "pdo_mysql"]
 
+RUN apt-get update \
+    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && docker-php-ext-install pdo_pgsql pgsql
+
 # work directory
-WORKDIR /var/www
+WORKDIR /var/www/html
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -113,7 +118,7 @@ RUN composer require codeigniter4/framework:v4.0.4 --ignore-platform-reqs
 
 # COPY all dependecies
 COPY ./web/app ./app
-COPY ./web/public ./html
+COPY ./web/public ./api
 COPY ./web/writable ./writable
 COPY ./web/spark ./spark
 
