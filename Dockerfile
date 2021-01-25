@@ -103,10 +103,6 @@ RUN ["apt-get", "install", "-y", "libxml2-dev"]
 RUN ["docker-php-ext-install", "soap"]
 RUN ["docker-php-ext-install", "mysqli", "pdo", "pdo_mysql"]
 
-RUN apt-get update \
-    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install pdo_pgsql pgsql
-
 # work directory
 
 WORKDIR /var/www/html
